@@ -63,7 +63,7 @@ function deleteNote(noted) {
   if (confirm("are you sure you want to delete this note?")) {
     // console.log(notes);
     const notesupdated = notes.filter((e) => e.id != noted); // removing seleted note from array tasks
-
+    notes = notesupdated;
     console.log(notesupdated);
     console.log("notes ", notes);
     localStorage.setItem("notes", JSON.stringify(notesupdated));
@@ -79,7 +79,7 @@ function deleteNote(noted) {
 function updateNote(noteId, title, desc) {
   isUpdate = true;
   updateIndex = notes.find((n) => n.id == noteId);
-  console.log(updateIndex);
+
   addBox.click();
   titleTag.value = title;
   descTag.value = desc;
@@ -89,20 +89,20 @@ function updateNote(noteId, title, desc) {
 
 form_data.addEventListener("submit", (e) => {
   e.preventDefault();
-  let noteTitle = titleTag.value,
-    noteDesc = descTag.value;
+
   if (isUpdate) {
-    updateIndex.description = noteDesc;
-    updateIndex.title = noteTitle;
+    updateIndex.description = descTag.value;
+    updateIndex.title = titleTag.value;
     localStorage.setItem("notes", JSON.stringify(notes));
     isUpdate = false;
     titleTag.value = "";
     descTag.value = "";
     updateIndex = null;
+    console.log("after update ", isUpdate);
     showNotes(notes);
-    return;
+    // return;
   } else {
-    if (noteTitle && noteDesc) {
+    if (titleTag.value !== "" && descTag.value !== "") {
       // getting month, day, year from the current date
       let dateObj = new Date(),
         month = dateObj.getMonth() + 1,
@@ -111,10 +111,11 @@ form_data.addEventListener("submit", (e) => {
 
       let noteInfo = {
         id: Math.random() * 100000000000000,
-        title: noteTitle,
-        description: noteDesc,
+        title: titleTag.value,
+        description: descTag.value,
         date: `${month} ${day}, ${year}`,
       };
+
       // if(!isUpdate) {
 
       //     notes.push(noteInfo); // adding new note to notes
@@ -126,9 +127,12 @@ form_data.addEventListener("submit", (e) => {
       notes.push(noteInfo); // adding new note to notes
       localStorage.setItem("notes", JSON.stringify(notes)); // saving data in local storage
       isUpdate = false;
+      console.log("after insert ", isUpdate);
       titleTag.value = "";
       descTag.value = "";
       showNotes(notes);
+    } else {
+      console.log("please fill it out");
     }
   }
 });
